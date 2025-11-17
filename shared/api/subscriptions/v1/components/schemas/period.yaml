@@ -1,0 +1,15 @@
+type: object
+required:
+  - start_date
+  - end_date
+properties:
+  start_date: 
+    type: string
+    pattern: '^\d{2}-\d{4}$'
+    description: Дата начала подписки
+    example: "07-2025"
+  end_date:
+    type: string
+    pattern: '^\d{2}-\d{4}$'
+    description: Дата окончании подписки 
+    example: "07-2025"

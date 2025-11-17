@@ -1,0 +1,16 @@
+type: object
+required: 
+  - total_cost
+  - period
+  - filters
+properties:
+  total_cost:
+    type: integer
+    format: int64
+    description: Стомость всех выбранных подписок
+    example: 1200
+  period:
+    $ref: ./schemas/period.yaml
+  filters:
+    $ref: ./schemas/filters.yaml
+  

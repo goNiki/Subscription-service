@@ -1,0 +1,15 @@
+type: object
+required: 
+  - id
+  - user_id
+properties:
+  id_uuid:
+    type: string
+    format: uuid
+    description: Уникальный идентификатор подписки
+    example: "550e8400-e29b-41d4-a716-446655440000"
+  user_id:
+    type: string
+    format: uuid
+    description: ID пользователя
+    example: "550e8400-e29b-41d4-a716-446655440000"

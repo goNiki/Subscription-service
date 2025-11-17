@@ -1,0 +1,9 @@
+name: sub_uuid
+in: path
+description: Уникальный идентификатор подписки
+required: true
+schema:
+  type: string
+  minLength: 1
+  maxLength: 100
+  example: "f47ac10b-58cc-0372-8567-0e02b2c3d479"

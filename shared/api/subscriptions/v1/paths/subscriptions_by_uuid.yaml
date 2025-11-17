@@ -1,0 +1,112 @@
+parameters: 
+  - $ref: ../params/sub_uuid.yaml
+
+get:
+  summary: Получить заказ по UUID
+  description: Возвращает информацию о заказе.
+  operationId: SubscriptionGetByID
+  tags: 
+    - Subscriptions
+  responses:
+    "200":
+      description: Подписка найдена успешно
+      content:
+        application/json:
+          schema:
+            $ref: ../components/get_subscription_response.yaml
+    "404":
+      description: Данная подписка не найдена
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/not_found_error.yaml
+    "400": 
+      description: Плохой запрос, не прошел валидацию
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/bad_request_error.yaml
+    "500":
+      description: Ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/internal_server_error.yaml
+    "default":
+      description: Неизвестная ошибка
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/generic_error.yaml
+
+put:
+  summary: Получить заказ по UUID
+  description: Возвращает информацию о заказе.
+  operationId: SubscriptionUpdateByID
+  tags: 
+    - Subscriptions
+  requestBody:
+    required: true
+    content: 
+      application/json:
+        schema:
+          $ref: ../components/update_subscription_request.yaml
+  responses:
+    "200":
+      description: Подписка успешно изменена 
+      content:
+        application/json:
+          schema:
+            $ref: ../components/update_subscription_response.yaml
+    "404":
+      description: Данная подписка не найдена
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/not_found_error.yaml
+    "400": 
+      description: Плохой запрос, не прошел валидацию
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/bad_request_error.yaml
+    "500":
+      description: Ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/internal_server_error.yaml
+    "default":
+      description: Неизвестная ошибка
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/generic_error.yaml
+
+delete:
+  summary: Удаление подписки по UUID
+  description: Удаление данных о подписке .
+  operationId: SubscriptionDeleteByID
+  tags: 
+    - Subscriptions
+  responses:
+    "204":
+      description: Подписка успешно удалена
+    "404":
+      description: Данной подписки не существует
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/not_found_error.yaml
+    "500":
+      description: Ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/internal_server_error.yaml
+    "default":
+      description: Неизвестная ошибка
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/generic_error.yaml

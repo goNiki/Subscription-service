@@ -1,0 +1,25 @@
+openapi: 3.0.3
+
+info:
+  title: Subscription-service
+  description: Сервис для для агрегации данных об онлайн-подписках пользователей.
+ 
+  version: "1.0.0"
+
+x-ogen:
+  target: ./shared/pkg/openapi/subscriptions/v1
+  package: subscriptions
+  clean: true
+
+tags: 
+  - name: Subscriptions
+    description: Операции с сервисом по агрегации данных об онлайн-подписках пользователей
+
+paths:
+  /api/v1/subscriptions:
+    $ref: ./paths/subscriptions.yaml
+  /api/v1/subscriptions/total-cost:
+    $ref: ./paths/subscriptions_total_cost.yaml
+  /api/v1/subscriptions/{sub_uuid}:
+    $ref: ./paths/subscriptions_by_uuid.yaml
+ 

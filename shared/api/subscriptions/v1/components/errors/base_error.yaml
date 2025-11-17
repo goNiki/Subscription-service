@@ -1,0 +1,15 @@
+type: object
+required:
+  - code
+  - message
+properties:
+  code:
+    type: integer
+    description: HTTP-код ошибки
+  message:
+    type: string
+    description: Описание ошибки
+  details:
+    type: object
+    description: Дополнительная информация об ошибке (опционально)
+    additionalProperties: true

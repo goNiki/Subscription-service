@@ -1,0 +1,61 @@
+get:
+  summary: Подсчет суммарной стоимости подписок 
+  description: Производит подсчет стоимости всех подписок, отобранных по фильтрам (user_id, service_name) и периодну от (start_date до end_date)
+  tags: 
+    - Subscriptions
+  operationId: GetTotalCostSubscriptions
+  parameters:
+    - name: user_id
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+    - name: service_name
+      in: query
+      required: false
+      schema: 
+        type: string
+    - name: start_date
+      in: query
+      required: true
+      schema: 
+        type: string
+        pattern: '^\d{2}-\d{4}$'
+    - name: end_date
+      in: query
+      required: true
+      schema:
+        type: string
+        pattern: '^\d{2}-\d{4}$'
+  responses:
+    "200":
+      description: Оплата произведена успешно
+      content:
+        application/json:
+          schema:
+            $ref: ../components/get_totalcost_response.yaml
+    "400":
+      description: Плохой запрос - переданы неверные параметры
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/bad_request_error.yaml
+    "422":
+      description: Ошибка валидации входных данных
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/validation_error.yaml
+    "500":
+      description: Ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/internal_server_error.yaml
+    "default":
+      description: Неизвестная ошибка
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/generic_error.yaml

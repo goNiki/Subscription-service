@@ -1,0 +1,26 @@
+type: object
+required: 
+  - start_date
+  - end_date
+properties:
+  user_id:
+    type: string
+    format: uuid
+    description: ID пользователя
+    example: "123e4567-e89b-12d3-a456-426614174000"
+  service_name:
+    type: string
+    description: Название сервиса, предоставляющего подписку
+    example: "Yandex Plus"
+  start_date: 
+    type: string
+    pattern: '^\d{2}-\d{4}$'
+    description: Дата начала подписки
+    example: "07-2025"
+  end_date:
+    type: string
+    pattern: '^\d{2}-\d{4}$'
+    description: Дата окончании подписки 
+    example: "07-2025"
+    
+  

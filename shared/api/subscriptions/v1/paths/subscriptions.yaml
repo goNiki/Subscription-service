@@ -1,0 +1,97 @@
+post:
+  summary: Создание подписки
+  description: Создаёт новую подписку.
+  tags: 
+    - Subscriptions
+  operationId: SubscriptionCreate
+  requestBody:
+    required: true
+    content: 
+      application/json:
+        schema:
+          $ref: ../components/create_subscription_request.yaml
+  responses:
+    "201":
+      description: Подписка успешно создана 
+      content:
+        application/json:
+          schema:
+            $ref: ../components/create_subscription_response.yaml
+    "400":
+      description: Плохой запрос - переданы неверные параметры
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/bad_request_error.yaml
+    "422":
+      description: Ошибка валидации входных данных
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/validation_error.yaml
+    "500":
+      description: Ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/internal_server_error.yaml
+    "default":
+      description: Неизвестная ошибка
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/generic_error.yaml
+
+get:
+  summary: Получение списка подписок 
+  description: Получение списка списка отфильтрованных подписок
+  tags: 
+    - Subscriptions
+  operationId: GetSubscription
+  parameters:
+    - name: user_id
+      in: query
+      required: false
+      schema: 
+        type: string
+        format: uuid
+    - name: service_name
+      in: query
+      required: false
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Выдача необходимых подписок 
+      content:
+        application/json:
+          schema:
+            $ref: ../components/get_subscription_response.yaml
+    "400":
+      description: Плохой запрос - переданы неверные параметры
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/bad_request_error.yaml
+    "422":
+      description: Ошибка валидации входных данных
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/validation_error.yaml
+    "500":
+      description: Ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/internal_server_error.yaml
+    "default":
+      description: Неизвестная ошибка
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/generic_error.yaml
+
+      
+
+

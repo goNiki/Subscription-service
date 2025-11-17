@@ -1,0 +1,31 @@
+type: object
+required: 
+  - service_name
+  - price
+  - user_id
+  - start_date
+properties:
+  service_name:
+    type: string
+    description: Название сервиса, предоставляющего подписку
+    example: "Yandex Plus"
+  price:
+    type: integer
+    format: int64
+    description: Стоимость месячной подписки в рублях
+    example: 300
+  user_id:
+    type: string
+    format: uuid
+    description: ID пользователя 
+    example: "550e8400-e29b-41d4-a716-446655440000"
+  start_date: 
+    type: string
+    pattern: '^\d{2}-\d{4}$'
+    description: Дата начала подписки
+    example: "07-2025"
+  end_date:
+    type: string
+    pattern: '^\d{2}-\d{4}$'
+    description: Дата окончании подписки 
+    example: "07-2025"
