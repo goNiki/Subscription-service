@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/goNiki/Subscription-service/internal/infrastructure/config"
+	"github.com/goNiki/Subscription-service/internal/infrastructure/db"
 	"github.com/goNiki/Subscription-service/internal/infrastructure/logger"
 	"github.com/goNiki/Subscription-service/shared/pkg/openapi/subscriptions/v1"
 )
@@ -14,6 +15,7 @@ type Container struct {
 	Log                 logger.Logger
 	SubscriptionsServer *subscriptions.Server
 	Server              *http.Server
+	DB                  *db.DB
 }
 
 func NewContainer(configpath string) (*Container, error) {
@@ -36,6 +38,11 @@ func NewContainer(configpath string) (*Container, error) {
 	c.Server = &http.Server{
 		Addr:        net.JoinHostPort(c.Config.Server.Host, c.Config.Server.Port),
 		ReadTimeout: c.Config.Server.Timeout,
+	}
+
+	c.DB, err = db.NewDB(&c.Config.DB)
+	if err != nil {
+		return &Container{}, err
 	}
 
 	return c, nil

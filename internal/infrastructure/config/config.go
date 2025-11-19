@@ -23,12 +23,17 @@ type ServerConfig struct {
 }
 
 type DBConfig struct {
-	Host     string `yaml:"host"`
-	Port     string `yaml:"port"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
-	Name     string `yaml:"name"`
-	Sslmode  string `yaml:"sslmode"`
+	Host              string        `yaml:"host"`
+	Port              string        `yaml:"port"`
+	User              string        `yaml:"user"`
+	Password          string        `yaml:"password"`
+	Name              string        `yaml:"name"`
+	Sslmode           string        `yaml:"sslmode"`
+	MaxConns          int32         `yaml:"maxconns"`
+	MinConns          int32         `yaml:"minconns"`
+	MaxConnLifeTime   time.Duration `yaml:"maxconnlifetime"`
+	MaxConnIdleTime   time.Duration `yaml:"maxconnidletime"`
+	HealthCheckPeriod time.Duration `yaml:"healthcheckperiod"`
 }
 
 func InitConfig(path string) (*Config, error) {

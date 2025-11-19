@@ -7,8 +7,13 @@ server:
 
 database:
   host: "localhost"
-  port:  "5433"
+  port:  "5432"
   user: "postgres"
   password: "postgres"
-  name: "subscriptions"
+  name: "postgres"
   sslmode: "disable"
+  maxconns: 20
+  minconns: 5
+  maxconnlifetime: 30
+  maxconnidletime: 5
+  healthcheckperiod: 1
