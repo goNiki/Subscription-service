@@ -75,7 +75,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/get_subscription_response'
+                $ref: '#/components/schemas/get_subscriptions_response'
         '400':
           description: Плохой запрос - переданы неверные параметры
           content:
@@ -336,7 +336,7 @@ components:
           format: date-time
           description: Дата последнего обновления подписки
           example: '2025-07-01T10:00:00Z'
-    get_subscription_response:
+    get_subscriptions_response:
       type: object
       required:
         - subscriptions
@@ -432,20 +432,8 @@ components:
         - $ref: '#/components/schemas/subscriptions_req_dto'
     create_subscription_response:
       type: object
-      required:
-        - id
-        - user_id
-      properties:
-        id_uuid:
-          type: string
-          format: uuid
-          description: Уникальный идентификатор подписки
-          example: 550e8400-e29b-41d4-a716-446655440000
-        user_id:
-          type: string
-          format: uuid
-          description: ID пользователя
-          example: 550e8400-e29b-41d4-a716-446655440000
+      allOf:
+        - $ref: '#/components/schemas/subscriptions_resp_dto'
     period:
       type: object
       required:
@@ -491,6 +479,10 @@ components:
           $ref: '#/components/schemas/period'
         filters:
           $ref: '#/components/schemas/filters'
+    get_subscription_response:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/subscriptions_req_dto'
     not_found_error:
       type: object
       required:

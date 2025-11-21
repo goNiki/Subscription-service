@@ -14,7 +14,7 @@ import (
 
 func encodeGetSubscriptionResponse(response GetSubscriptionRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetSubscriptionResponse:
+	case *GetSubscriptionsResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -132,7 +132,7 @@ func encodeGetTotalCostSubscriptionsResponse(response GetTotalCostSubscriptionsR
 
 func encodeSubscriptionCreateResponse(response SubscriptionCreateRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *CreateSubscriptionResponse:
+	case *SubscriptionsRespDto:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(201)
 		span.SetStatus(codes.Ok, http.StatusText(201))
@@ -230,7 +230,7 @@ func encodeSubscriptionDeleteByIDResponse(response SubscriptionDeleteByIDRes, w 
 
 func encodeSubscriptionGetByIDResponse(response SubscriptionGetByIDRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetSubscriptionResponse:
+	case *SubscriptionsReqDto:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))

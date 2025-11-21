@@ -47,7 +47,7 @@ func (s *Filters) Validate() error {
 	return nil
 }
 
-func (s *GetSubscriptionResponse) Validate() error {
+func (s *GetSubscriptionsResponse) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
 	}

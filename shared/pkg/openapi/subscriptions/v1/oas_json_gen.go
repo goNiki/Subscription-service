@@ -126,119 +126,6 @@ func (s *BadRequestError) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *CreateSubscriptionResponse) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *CreateSubscriptionResponse) encodeFields(e *jx.Encoder) {
-	{
-		if s.IDUUID.Set {
-			e.FieldStart("id_uuid")
-			s.IDUUID.Encode(e)
-		}
-	}
-	{
-		e.FieldStart("user_id")
-		json.EncodeUUID(e, s.UserID)
-	}
-}
-
-var jsonFieldsNameOfCreateSubscriptionResponse = [2]string{
-	0: "id_uuid",
-	1: "user_id",
-}
-
-// Decode decodes CreateSubscriptionResponse from json.
-func (s *CreateSubscriptionResponse) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode CreateSubscriptionResponse to nil")
-	}
-	var requiredBitSet [1]uint8
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "id_uuid":
-			if err := func() error {
-				s.IDUUID.Reset()
-				if err := s.IDUUID.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"id_uuid\"")
-			}
-		case "user_id":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := json.DecodeUUID(d)
-				s.UserID = v
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"user_id\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode CreateSubscriptionResponse")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00000010,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfCreateSubscriptionResponse) {
-					name = jsonFieldsNameOfCreateSubscriptionResponse[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *CreateSubscriptionResponse) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *CreateSubscriptionResponse) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
 func (s *Filters) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -432,14 +319,14 @@ func (s *GenericError) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *GetSubscriptionResponse) Encode(e *jx.Encoder) {
+func (s *GetSubscriptionsResponse) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *GetSubscriptionResponse) encodeFields(e *jx.Encoder) {
+func (s *GetSubscriptionsResponse) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("subscriptions")
 		e.ArrStart()
@@ -454,15 +341,15 @@ func (s *GetSubscriptionResponse) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfGetSubscriptionResponse = [2]string{
+var jsonFieldsNameOfGetSubscriptionsResponse = [2]string{
 	0: "subscriptions",
 	1: "total",
 }
 
-// Decode decodes GetSubscriptionResponse from json.
-func (s *GetSubscriptionResponse) Decode(d *jx.Decoder) error {
+// Decode decodes GetSubscriptionsResponse from json.
+func (s *GetSubscriptionsResponse) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode GetSubscriptionResponse to nil")
+		return errors.New("invalid: unable to decode GetSubscriptionsResponse to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -503,7 +390,7 @@ func (s *GetSubscriptionResponse) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode GetSubscriptionResponse")
+		return errors.Wrap(err, "decode GetSubscriptionsResponse")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -520,8 +407,8 @@ func (s *GetSubscriptionResponse) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfGetSubscriptionResponse) {
-					name = jsonFieldsNameOfGetSubscriptionResponse[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfGetSubscriptionsResponse) {
+					name = jsonFieldsNameOfGetSubscriptionsResponse[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -542,14 +429,14 @@ func (s *GetSubscriptionResponse) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *GetSubscriptionResponse) MarshalJSON() ([]byte, error) {
+func (s *GetSubscriptionsResponse) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *GetSubscriptionResponse) UnmarshalJSON(data []byte) error {
+func (s *GetSubscriptionsResponse) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -937,41 +824,6 @@ func (s OptString) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptString) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes uuid.UUID as json.
-func (o OptUUID) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	json.EncodeUUID(e, o.Value)
-}
-
-// Decode decodes uuid.UUID from json.
-func (o *OptUUID) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptUUID to nil")
-	}
-	o.Set = true
-	v, err := json.DecodeUUID(d)
-	if err != nil {
-		return err
-	}
-	o.Value = v
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptUUID) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptUUID) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

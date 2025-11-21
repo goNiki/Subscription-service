@@ -47,36 +47,6 @@ func (*BadRequestError) subscriptionCreateRes()        {}
 func (*BadRequestError) subscriptionGetByIDRes()       {}
 func (*BadRequestError) subscriptionUpdateByIDRes()    {}
 
-// Ref: #/components/schemas/create_subscription_response
-type CreateSubscriptionResponse struct {
-	// Уникальный идентификатор подписки.
-	IDUUID OptUUID `json:"id_uuid"`
-	// ID пользователя.
-	UserID uuid.UUID `json:"user_id"`
-}
-
-// GetIDUUID returns the value of IDUUID.
-func (s *CreateSubscriptionResponse) GetIDUUID() OptUUID {
-	return s.IDUUID
-}
-
-// GetUserID returns the value of UserID.
-func (s *CreateSubscriptionResponse) GetUserID() uuid.UUID {
-	return s.UserID
-}
-
-// SetIDUUID sets the value of IDUUID.
-func (s *CreateSubscriptionResponse) SetIDUUID(val OptUUID) {
-	s.IDUUID = val
-}
-
-// SetUserID sets the value of UserID.
-func (s *CreateSubscriptionResponse) SetUserID(val uuid.UUID) {
-	s.UserID = val
-}
-
-func (*CreateSubscriptionResponse) subscriptionCreateRes() {}
-
 // Ref: #/components/schemas/filters
 type Filters struct {
 	// ID пользователя.
@@ -159,8 +129,8 @@ func (s *GenericErrorStatusCode) SetResponse(val GenericError) {
 	s.Response = val
 }
 
-// Ref: #/components/schemas/get_subscription_response
-type GetSubscriptionResponse struct {
+// Ref: #/components/schemas/get_subscriptions_response
+type GetSubscriptionsResponse struct {
 	// Массив с подписками.
 	Subscriptions []SubscriptionsRespDto `json:"subscriptions"`
 	// Общее количество подписок в массиве.
@@ -168,27 +138,26 @@ type GetSubscriptionResponse struct {
 }
 
 // GetSubscriptions returns the value of Subscriptions.
-func (s *GetSubscriptionResponse) GetSubscriptions() []SubscriptionsRespDto {
+func (s *GetSubscriptionsResponse) GetSubscriptions() []SubscriptionsRespDto {
 	return s.Subscriptions
 }
 
 // GetTotal returns the value of Total.
-func (s *GetSubscriptionResponse) GetTotal() int64 {
+func (s *GetSubscriptionsResponse) GetTotal() int64 {
 	return s.Total
 }
 
 // SetSubscriptions sets the value of Subscriptions.
-func (s *GetSubscriptionResponse) SetSubscriptions(val []SubscriptionsRespDto) {
+func (s *GetSubscriptionsResponse) SetSubscriptions(val []SubscriptionsRespDto) {
 	s.Subscriptions = val
 }
 
 // SetTotal sets the value of Total.
-func (s *GetSubscriptionResponse) SetTotal(val int64) {
+func (s *GetSubscriptionsResponse) SetTotal(val int64) {
 	s.Total = val
 }
 
-func (*GetSubscriptionResponse) getSubscriptionRes()     {}
-func (*GetSubscriptionResponse) subscriptionGetByIDRes() {}
+func (*GetSubscriptionsResponse) getSubscriptionRes() {}
 
 // Ref: #/components/schemas/get_totalcost_response
 type GetTotalcostResponse struct {
@@ -486,6 +455,8 @@ func (s *SubscriptionsReqDto) SetEndDate(val OptString) {
 	s.EndDate = val
 }
 
+func (*SubscriptionsReqDto) subscriptionGetByIDRes() {}
+
 // Ref: #/components/schemas/subscriptions_resp_dto
 type SubscriptionsRespDto struct {
 	// Уникальный номер подписки.
@@ -586,6 +557,7 @@ func (s *SubscriptionsRespDto) SetUpdatedAt(val time.Time) {
 	s.UpdatedAt = val
 }
 
+func (*SubscriptionsRespDto) subscriptionCreateRes()     {}
 func (*SubscriptionsRespDto) subscriptionUpdateByIDRes() {}
 
 // Ref: #/components/schemas/validation_error

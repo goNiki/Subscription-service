@@ -29,7 +29,7 @@ func decodeGetSubscriptionResponse(resp *http.Response) (res GetSubscriptionRes,
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response GetSubscriptionResponse
+			var response GetSubscriptionsResponse
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -423,7 +423,7 @@ func decodeSubscriptionCreateResponse(resp *http.Response) (res SubscriptionCrea
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response CreateSubscriptionResponse
+			var response SubscriptionsRespDto
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -439,6 +439,15 @@ func decodeSubscriptionCreateResponse(resp *http.Response) (res SubscriptionCrea
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
 		default:
@@ -732,7 +741,7 @@ func decodeSubscriptionGetByIDResponse(resp *http.Response) (res SubscriptionGet
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response GetSubscriptionResponse
+			var response SubscriptionsReqDto
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
