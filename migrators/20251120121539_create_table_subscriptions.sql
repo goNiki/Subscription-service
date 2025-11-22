@@ -7,8 +7,8 @@ CREATE TABLE subscriptions(
     user_id UUID NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE, 
-    create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updatea_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- +goose StatementEnd
