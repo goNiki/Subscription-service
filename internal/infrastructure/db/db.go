@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/goNiki/Subscription-service/internal/domain/errorapp"
 	"github.com/goNiki/Subscription-service/internal/infrastructure/config"
-	"github.com/goNiki/Subscription-service/models/errorapp"
+
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 

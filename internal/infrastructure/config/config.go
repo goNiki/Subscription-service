@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/goNiki/Subscription-service/models/errorapp"
+	"github.com/goNiki/Subscription-service/internal/domain/errorapp"
 	"gopkg.in/yaml.v2"
 )
 
