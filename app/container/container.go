@@ -16,12 +16,12 @@ import (
 type Container struct {
 	Config               *config.Config
 	Log                  logger.Logger
-	SubscriptionsServer  *subscriptions.Server
-	Server               *http.Server
 	DB                   *db.DB
 	SubscriptionsRepo    *subscriptionsrepo.Repository
 	SubscriptionsService *subscrtiptionsservice.Service
 	SubscriptionsApi     *v1.Api
+	SubscriptionsServer  *subscriptions.Server
+	Server               *http.Server
 }
 
 func NewContainer(configpath string) (*Container, error) {
@@ -36,16 +36,6 @@ func NewContainer(configpath string) (*Container, error) {
 
 	c.Log = *logger.InitLogger(c.Config.Server.Env)
 
-	c.SubscriptionsServer, err = subscriptions.NewServer(subscriptions.UnimplementedHandler{})
-	if err != nil {
-		return &Container{}, err
-	}
-
-	c.Server = &http.Server{
-		Addr:        net.JoinHostPort(c.Config.Server.Host, c.Config.Server.Port),
-		ReadTimeout: c.Config.Server.Timeout,
-	}
-
 	c.DB, err = db.NewDB(&c.Config.DB)
 	if err != nil {
 		return &Container{}, err
@@ -56,6 +46,16 @@ func NewContainer(configpath string) (*Container, error) {
 	c.SubscriptionsService = subscrtiptionsservice.NewSubscriptionsService(c.SubscriptionsRepo)
 
 	c.SubscriptionsApi = v1.NewSubscriptionsApi(c.Log.Log, c.SubscriptionsService)
+
+	c.SubscriptionsServer, err = subscriptions.NewServer(c.SubscriptionsApi)
+	if err != nil {
+		return &Container{}, err
+	}
+
+	c.Server = &http.Server{
+		Addr:        net.JoinHostPort(c.Config.Server.Host, c.Config.Server.Port),
+		ReadTimeout: c.Config.Server.Timeout,
+	}
 
 	return c, nil
 }
