@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"log"
 	"os"
@@ -10,10 +11,15 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/goNiki/Subscription-service/app/container"
+	"github.com/goNiki/Subscription-service/internal/infrastructure/swagger"
 )
 
 var configpath = "./configs/config.yaml"
+
+//go:embed openapi-bundled.yaml
+var swaggerDoc []byte
 
 func main() {
 
@@ -23,8 +29,13 @@ func main() {
 	}
 
 	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.RequestID)
 
-	r.Mount("/api", c.SubscriptionsServer)
+	swagger.RegisterRoutes(r, swaggerDoc)
+
+	r.Mount("/", c.SubscriptionsServer)
 
 	c.Server.Handler = r
 

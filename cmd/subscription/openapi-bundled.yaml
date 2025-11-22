@@ -1,0 +1,555 @@
+openapi: 3.0.3
+info:
+  title: Subscription-service
+  description: Сервис для для агрегации данных об онлайн-подписках пользователей.
+  version: 1.0.0
+tags:
+  - name: Subscriptions
+    description: Операции с сервисом по агрегации данных об онлайн-подписках пользователей
+paths:
+  /api/v1/subscriptions:
+    post:
+      summary: Создание подписки
+      description: Создаёт новую подписку.
+      tags:
+        - Subscriptions
+      operationId: SubscriptionCreate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_subscription_request'
+      responses:
+        '201':
+          description: Подписка успешно создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create_subscription_response'
+        '400':
+          description: Плохой запрос - переданы неверные параметры
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request_error'
+        '422':
+          description: Ошибка валидации входных данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/validation_error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server_error'
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    get:
+      summary: Получение списка подписок
+      description: Получение списка списка отфильтрованных подписок
+      tags:
+        - Subscriptions
+      operationId: GetSubscription
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/get_subscriptions_request'
+      responses:
+        '200':
+          description: Выдача необходимых подписок
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get_subscriptions_response'
+        '400':
+          description: Плохой запрос - переданы неверные параметры
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request_error'
+        '404':
+          description: Данная подписка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found_error'
+        '422':
+          description: Ошибка валидации входных данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/validation_error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server_error'
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /api/v1/subscriptions/total-cost:
+    get:
+      summary: Подсчет суммарной стоимости подписок
+      description: Производит подсчет стоимости всех подписок, отобранных по фильтрам (user_id, service_name) и периодну от (start_date до end_date)
+      tags:
+        - Subscriptions
+      operationId: GetTotalCostSubscriptions
+      parameters:
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+            description: ID пользователя
+        - name: service_name
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 255
+            description: Название сервиса
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            pattern: ^\d{2}-\d{4}$
+            description: Дата начала периода
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            pattern: ^\d{2}-\d{4}$
+            description: Дата конца периода
+      responses:
+        '200':
+          description: Оплата произведена успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get_totalcost_response'
+        '400':
+          description: Плохой запрос - переданы неверные параметры
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request_error'
+        '422':
+          description: Ошибка валидации входных данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/validation_error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server_error'
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /api/v1/subscriptions/{sub_uuid}:
+    parameters:
+      - $ref: '#/components/parameters/sub_uuid'
+    get:
+      summary: Получить заказ по UUID
+      description: Возвращает информацию о заказе.
+      operationId: SubscriptionGetByID
+      tags:
+        - Subscriptions
+      responses:
+        '200':
+          description: Подписка найдена успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get_subscription_response'
+        '400':
+          description: Плохой запрос, не прошел валидацию
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request_error'
+        '404':
+          description: Данная подписка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found_error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server_error'
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    put:
+      summary: Получить заказ по UUID
+      description: Возвращает информацию о заказе.
+      operationId: SubscriptionUpdateByID
+      tags:
+        - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update_subscription_request'
+      responses:
+        '200':
+          description: Подписка успешно изменена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update_subscription_response'
+        '400':
+          description: Плохой запрос, не прошел валидацию
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request_error'
+        '404':
+          description: Данная подписка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found_error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server_error'
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    delete:
+      summary: Удаление подписки по UUID
+      description: Удаление данных о подписке .
+      operationId: SubscriptionDeleteByID
+      tags:
+        - Subscriptions
+      responses:
+        '204':
+          description: Подписка успешно удалена
+        '400':
+          description: Плохой запрос, не прошел валидацию
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request_error'
+        '404':
+          description: Данной подписки не существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found_error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server_error'
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+components:
+  schemas:
+    get_subscriptions_request:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          description: ID пользователя
+          example: 550e8400-e29b-41d4-a716-446655440000
+        service_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Название сервиса, предоставляющего подписку
+          example: Yandex Plus
+    generic_error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: HTTP-код ошибки
+        message:
+          type: string
+          description: Описание ошибки
+    subscriptions_resp_dto:
+      type: object
+      required:
+        - id
+        - service_name
+        - price
+        - user_id
+        - start_date
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный номер подписки
+          example: 550e8400-e29b-41d4-a716-446655440000
+        service_name:
+          type: string
+          description: Название сервиса, предоставляющего подписку
+          example: Yandex Plus
+        price:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Стоимость месячной подписки в рублях
+          example: 300
+        user_id:
+          type: string
+          format: uuid
+          description: ID пользователя
+          example: 550e8400-e29b-41d4-a716-446655440000
+        start_date:
+          type: string
+          pattern: ^\d{2}-\d{4}$
+          description: Дата начала подписки
+          example: 07-2025
+        end_date:
+          type: string
+          pattern: ^\d{2}-\d{4}$
+          description: Дата окончании подписки
+          example: 07-2025
+        created_at:
+          type: string
+          format: date-time
+          description: Дата создания подписки
+          example: '2025-07-01T10:00:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Дата последнего обновления подписки
+          example: '2025-07-01T10:00:00Z'
+    get_subscriptions_response:
+      type: object
+      required:
+        - subscriptions
+        - total
+      properties:
+        subscriptions:
+          type: array
+          description: Массив с подписками
+          items:
+            $ref: '#/components/schemas/subscriptions_resp_dto'
+        total:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Общее количество подписок в массиве
+          example: 10
+    bad_request_error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: HTTP-код ошибки
+          example: 400
+        message:
+          type: string
+          description: Описание ошибки
+          example: 'Bad Request: Invalid parameter format'
+    not_found_error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: HTTP-код ошибки
+          example: 404
+        message:
+          type: string
+          description: Описание ошибки
+          example: Weather for city 'Unknown' not found
+    validation_error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: HTTP-код ошибки
+          example: 422
+        message:
+          type: string
+          description: Описание ошибки
+          example: Ошибка валидации входных данных
+    internal_server_error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: HTTP-код ошибки
+          example: 500
+        message:
+          type: string
+          description: Описание ошибки
+          example: Internal server error occurred
+    subscriptions_req_dto:
+      type: object
+      required:
+        - service_name
+        - price
+        - user_id
+        - start_date
+      properties:
+        service_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Название сервиса, предоставляющего подписку
+          example: Yandex Plus
+        price:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Стоимость месячной подписки в рублях
+          example: 300
+        user_id:
+          type: string
+          format: uuid
+          description: ID пользователя
+          example: 550e8400-e29b-41d4-a716-446655440000
+        start_date:
+          type: string
+          pattern: ^\d{2}-\d{4}$
+          description: Дата начала подписки
+          example: 07-2025
+        end_date:
+          type: string
+          pattern: ^\d{2}-\d{4}$
+          description: Дата окончании подписки
+          example: 07-2025
+    create_subscription_request:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/subscriptions_req_dto'
+    create_subscription_response:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/subscriptions_resp_dto'
+    period:
+      type: object
+      required:
+        - start_date
+        - end_date
+      properties:
+        start_date:
+          type: string
+          pattern: ^\d{2}-\d{4}$
+          description: Дата начала подписки
+          example: 07-2025
+        end_date:
+          type: string
+          pattern: ^\d{2}-\d{4}$
+          description: Дата окончании подписки
+          example: 07-2025
+    filters:
+      type: object
+      required: null
+      properties:
+        user_id:
+          type: string
+          pattern: uuid
+          description: ID пользователя
+          example: 550e8400-e29b-41d4-a716-446655440000
+        service_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Название сервиса, предоставляющего подписку
+          example: Yandex Plus
+    get_totalcost_response:
+      type: object
+      required:
+        - total_cost
+        - period
+        - filters
+        - total_subscriptions
+      properties:
+        total_cost:
+          type: integer
+          format: int64
+          description: Стомость всех выбранных подписок
+          example: 1200
+        period:
+          $ref: '#/components/schemas/period'
+        filters:
+          $ref: '#/components/schemas/filters'
+    get_subscription_response:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/subscriptions_resp_dto'
+    update_subscription_request:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/subscriptions_req_dto'
+    update_subscription_response:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/subscriptions_resp_dto'
+  parameters:
+    sub_uuid:
+      name: sub_uuid
+      in: path
+      description: Уникальный идентификатор подписки
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 100
+        example: f47ac10b-58cc-0372-8567-0e02b2c3d479
+x-ogen:
+  target: ./shared/pkg/openapi/subscriptions/v1
+  package: subscriptions
+  clean: true
