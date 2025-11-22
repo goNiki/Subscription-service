@@ -18,7 +18,7 @@ var _ Handler = UnimplementedHandler{}
 // Получение списка списка отфильтрованных подписок.
 //
 // GET /api/v1/subscriptions
-func (UnimplementedHandler) GetSubscription(ctx context.Context, params GetSubscriptionParams) (r GetSubscriptionRes, _ error) {
+func (UnimplementedHandler) GetSubscription(ctx context.Context, req OptGetSubscriptionsRequest) (r GetSubscriptionRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

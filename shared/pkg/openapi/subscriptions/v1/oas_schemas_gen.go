@@ -44,6 +44,7 @@ func (s *BadRequestError) SetMessage(val string) {
 func (*BadRequestError) getSubscriptionRes()           {}
 func (*BadRequestError) getTotalCostSubscriptionsRes() {}
 func (*BadRequestError) subscriptionCreateRes()        {}
+func (*BadRequestError) subscriptionDeleteByIDRes()    {}
 func (*BadRequestError) subscriptionGetByIDRes()       {}
 func (*BadRequestError) subscriptionUpdateByIDRes()    {}
 
@@ -127,6 +128,34 @@ func (s *GenericErrorStatusCode) SetStatusCode(val int) {
 // SetResponse sets the value of Response.
 func (s *GenericErrorStatusCode) SetResponse(val GenericError) {
 	s.Response = val
+}
+
+// Ref: #/components/schemas/get_subscriptions_request
+type GetSubscriptionsRequest struct {
+	// ID пользователя.
+	UserID OptUUID `json:"user_id"`
+	// Название сервиса, предоставляющего подписку.
+	ServiceName OptString `json:"service_name"`
+}
+
+// GetUserID returns the value of UserID.
+func (s *GetSubscriptionsRequest) GetUserID() OptUUID {
+	return s.UserID
+}
+
+// GetServiceName returns the value of ServiceName.
+func (s *GetSubscriptionsRequest) GetServiceName() OptString {
+	return s.ServiceName
+}
+
+// SetUserID sets the value of UserID.
+func (s *GetSubscriptionsRequest) SetUserID(val OptUUID) {
+	s.UserID = val
+}
+
+// SetServiceName sets the value of ServiceName.
+func (s *GetSubscriptionsRequest) SetServiceName(val OptString) {
+	s.ServiceName = val
 }
 
 // Ref: #/components/schemas/get_subscriptions_response
@@ -262,9 +291,56 @@ func (s *NotFoundError) SetMessage(val string) {
 	s.Message = val
 }
 
+func (*NotFoundError) getSubscriptionRes()        {}
 func (*NotFoundError) subscriptionDeleteByIDRes() {}
 func (*NotFoundError) subscriptionGetByIDRes()    {}
 func (*NotFoundError) subscriptionUpdateByIDRes() {}
+
+// NewOptGetSubscriptionsRequest returns new OptGetSubscriptionsRequest with value set to v.
+func NewOptGetSubscriptionsRequest(v GetSubscriptionsRequest) OptGetSubscriptionsRequest {
+	return OptGetSubscriptionsRequest{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetSubscriptionsRequest is optional GetSubscriptionsRequest.
+type OptGetSubscriptionsRequest struct {
+	Value GetSubscriptionsRequest
+	Set   bool
+}
+
+// IsSet returns true if OptGetSubscriptionsRequest was set.
+func (o OptGetSubscriptionsRequest) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetSubscriptionsRequest) Reset() {
+	var v GetSubscriptionsRequest
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetSubscriptionsRequest) SetTo(v GetSubscriptionsRequest) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetSubscriptionsRequest) Get() (v GetSubscriptionsRequest, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetSubscriptionsRequest) Or(d GetSubscriptionsRequest) GetSubscriptionsRequest {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
 
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
@@ -455,8 +531,6 @@ func (s *SubscriptionsReqDto) SetEndDate(val OptString) {
 	s.EndDate = val
 }
 
-func (*SubscriptionsReqDto) subscriptionGetByIDRes() {}
-
 // Ref: #/components/schemas/subscriptions_resp_dto
 type SubscriptionsRespDto struct {
 	// Уникальный номер подписки.
@@ -558,6 +632,7 @@ func (s *SubscriptionsRespDto) SetUpdatedAt(val time.Time) {
 }
 
 func (*SubscriptionsRespDto) subscriptionCreateRes()     {}
+func (*SubscriptionsRespDto) subscriptionGetByIDRes()    {}
 func (*SubscriptionsRespDto) subscriptionUpdateByIDRes() {}
 
 // Ref: #/components/schemas/validation_error

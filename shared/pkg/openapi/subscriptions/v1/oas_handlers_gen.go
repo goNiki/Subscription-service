@@ -103,18 +103,23 @@ func (s *Server) handleGetSubscriptionRequest(args [0]string, argsEscaped bool, 
 			ID:   "GetSubscription",
 		}
 	)
-	params, err := decodeGetSubscriptionParams(args, argsEscaped, r)
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeGetSubscriptionRequest(r)
 	if err != nil {
-		err = &ogenerrors.DecodeParamsError{
+		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
 			Err:              err,
 		}
-		defer recordError("DecodeParams", err)
+		defer recordError("DecodeRequest", err)
 		s.cfg.ErrorHandler(ctx, w, r, err)
 		return
 	}
-
-	var rawBody []byte
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
 
 	var response GetSubscriptionRes
 	if m := s.cfg.Middleware; m != nil {
@@ -123,24 +128,15 @@ func (s *Server) handleGetSubscriptionRequest(args [0]string, argsEscaped bool, 
 			OperationName:    GetSubscriptionOperation,
 			OperationSummary: "Получение списка подписок",
 			OperationID:      "GetSubscription",
-			Body:             nil,
+			Body:             request,
 			RawBody:          rawBody,
-			Params: middleware.Parameters{
-				{
-					Name: "user_id",
-					In:   "query",
-				}: params.UserID,
-				{
-					Name: "service_name",
-					In:   "query",
-				}: params.ServiceName,
-			},
-			Raw: r,
+			Params:           middleware.Parameters{},
+			Raw:              r,
 		}
 
 		type (
-			Request  = struct{}
-			Params   = GetSubscriptionParams
+			Request  = OptGetSubscriptionsRequest
+			Params   = struct{}
 			Response = GetSubscriptionRes
 		)
 		response, err = middleware.HookMiddleware[
@@ -150,14 +146,14 @@ func (s *Server) handleGetSubscriptionRequest(args [0]string, argsEscaped bool, 
 		](
 			m,
 			mreq,
-			unpackGetSubscriptionParams,
+			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.GetSubscription(ctx, params)
+				response, err = s.h.GetSubscription(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.GetSubscription(ctx, params)
+		response, err = s.h.GetSubscription(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*GenericErrorStatusCode](err); ok {

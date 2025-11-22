@@ -7,11 +7,14 @@ required:
 properties:
   service_name:
     type: string
+    minLength: 1
+    maxLength: 255
     description: Название сервиса, предоставляющего подписку
     example: "Yandex Plus"
   price:
     type: integer
     format: int64
+    minimum: 0
     description: Стоимость месячной подписки в рублях
     example: 300
   user_id:

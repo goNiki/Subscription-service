@@ -3,6 +3,7 @@ required:
   - total_cost
   - period
   - filters
+  - total_subscriptions
 properties:
   total_cost:
     type: integer

@@ -40,6 +40,19 @@ func encodeGetSubscriptionResponse(response GetSubscriptionRes, w http.ResponseW
 
 		return nil
 
+	case *NotFoundError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(404)
+		span.SetStatus(codes.Error, http.StatusText(404))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
 	case *ValidationError:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(422)
@@ -197,6 +210,19 @@ func encodeSubscriptionDeleteByIDResponse(response SubscriptionDeleteByIDRes, w 
 
 		return nil
 
+	case *BadRequestError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(400)
+		span.SetStatus(codes.Error, http.StatusText(400))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
 	case *NotFoundError:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(404)
@@ -230,7 +256,7 @@ func encodeSubscriptionDeleteByIDResponse(response SubscriptionDeleteByIDRes, w 
 
 func encodeSubscriptionGetByIDResponse(response SubscriptionGetByIDRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *SubscriptionsReqDto:
+	case *SubscriptionsRespDto:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))

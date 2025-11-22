@@ -32,7 +32,7 @@ type Invoker interface {
 	// Получение списка списка отфильтрованных подписок.
 	//
 	// GET /api/v1/subscriptions
-	GetSubscription(ctx context.Context, params GetSubscriptionParams) (GetSubscriptionRes, error)
+	GetSubscription(ctx context.Context, request OptGetSubscriptionsRequest) (GetSubscriptionRes, error)
 	// GetTotalCostSubscriptions invokes GetTotalCostSubscriptions operation.
 	//
 	// Производит подсчет стоимости всех подписок,
@@ -119,12 +119,12 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // Получение списка списка отфильтрованных подписок.
 //
 // GET /api/v1/subscriptions
-func (c *Client) GetSubscription(ctx context.Context, params GetSubscriptionParams) (GetSubscriptionRes, error) {
-	res, err := c.sendGetSubscription(ctx, params)
+func (c *Client) GetSubscription(ctx context.Context, request OptGetSubscriptionsRequest) (GetSubscriptionRes, error) {
+	res, err := c.sendGetSubscription(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendGetSubscription(ctx context.Context, params GetSubscriptionParams) (res GetSubscriptionRes, err error) {
+func (c *Client) sendGetSubscription(ctx context.Context, request OptGetSubscriptionsRequest) (res GetSubscriptionRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("GetSubscription"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -165,48 +165,13 @@ func (c *Client) sendGetSubscription(ctx context.Context, params GetSubscription
 	pathParts[0] = "/api/v1/subscriptions"
 	uri.AddPathParts(u, pathParts[:]...)
 
-	stage = "EncodeQueryParams"
-	q := uri.NewQueryEncoder()
-	{
-		// Encode "user_id" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "user_id",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.UserID.Get(); ok {
-				return e.EncodeValue(conv.UUIDToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "service_name" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "service_name",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.ServiceName.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	u.RawQuery = q.Values().Encode()
-
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeGetSubscriptionRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
 	}
 
 	stage = "SendRequest"

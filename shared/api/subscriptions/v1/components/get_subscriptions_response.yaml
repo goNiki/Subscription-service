@@ -11,5 +11,6 @@ properties:
   total:
     type: integer
     format: int64
+    minimum: 0
     description: Общее количество подписок в массиве 
     example: 10

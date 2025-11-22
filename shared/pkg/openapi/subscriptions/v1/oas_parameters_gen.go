@@ -15,121 +15,6 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-// GetSubscriptionParams is parameters of GetSubscription operation.
-type GetSubscriptionParams struct {
-	UserID      OptUUID   `json:",omitempty,omitzero"`
-	ServiceName OptString `json:",omitempty,omitzero"`
-}
-
-func unpackGetSubscriptionParams(packed middleware.Parameters) (params GetSubscriptionParams) {
-	{
-		key := middleware.ParameterKey{
-			Name: "user_id",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.UserID = v.(OptUUID)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "service_name",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.ServiceName = v.(OptString)
-		}
-	}
-	return params
-}
-
-func decodeGetSubscriptionParams(args [0]string, argsEscaped bool, r *http.Request) (params GetSubscriptionParams, _ error) {
-	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode query: user_id.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "user_id",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotUserIDVal uuid.UUID
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToUUID(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotUserIDVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.UserID.SetTo(paramsDotUserIDVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "user_id",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: service_name.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "service_name",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotServiceNameVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotServiceNameVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.ServiceName.SetTo(paramsDotServiceNameVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "service_name",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	return params, nil
-}
-
 // GetTotalCostSubscriptionsParams is parameters of GetTotalCostSubscriptions operation.
 type GetTotalCostSubscriptionsParams struct {
 	UserID      OptUUID   `json:",omitempty,omitzero"`
@@ -247,6 +132,29 @@ func decodeGetTotalCostSubscriptionsParams(args [0]string, argsEscaped bool, r *
 				params.ServiceName.SetTo(paramsDotServiceNameVal)
 				return nil
 			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.ServiceName.Get(); ok {
+					if err := func() error {
+						if err := (validate.String{
+							MinLength:    1,
+							MinLengthSet: true,
+							MaxLength:    255,
+							MaxLengthSet: true,
+							Email:        false,
+							Hostname:     false,
+							Regex:        nil,
+						}).Validate(string(value)); err != nil {
+							return errors.Wrap(err, "string")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
 				return err
 			}
 		}

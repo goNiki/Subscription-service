@@ -57,18 +57,11 @@ paths:
       tags:
         - Subscriptions
       operationId: GetSubscription
-      parameters:
-        - name: user_id
-          in: query
-          required: false
-          schema:
-            type: string
-            format: uuid
-        - name: service_name
-          in: query
-          required: false
-          schema:
-            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/get_subscriptions_request'
       responses:
         '200':
           description: Выдача необходимых подписок
@@ -82,6 +75,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/bad_request_error'
+        '404':
+          description: Данная подписка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found_error'
         '422':
           description: Ошибка валидации входных данных
           content:
@@ -114,23 +113,29 @@ paths:
           schema:
             type: string
             format: uuid
+            description: ID пользователя
         - name: service_name
           in: query
           required: false
           schema:
             type: string
+            minLength: 1
+            maxLength: 255
+            description: Название сервиса
         - name: start_date
           in: query
           required: true
           schema:
             type: string
             pattern: ^\d{2}-\d{4}$
+            description: Дата начала периода
         - name: end_date
           in: query
           required: true
           schema:
             type: string
             pattern: ^\d{2}-\d{4}$
+            description: Дата конца периода
       responses:
         '200':
           description: Оплата произведена успешно
@@ -254,6 +259,12 @@ paths:
       responses:
         '204':
           description: Подписка успешно удалена
+        '400':
+          description: Плохой запрос, не прошел валидацию
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request_error'
         '404':
           description: Данной подписки не существует
           content:
@@ -274,6 +285,20 @@ paths:
                 $ref: '#/components/schemas/generic_error'
 components:
   schemas:
+    get_subscriptions_request:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          description: ID пользователя
+          example: 550e8400-e29b-41d4-a716-446655440000
+        service_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Название сервиса, предоставляющего подписку
+          example: Yandex Plus
     generic_error:
       type: object
       required:
@@ -309,6 +334,7 @@ components:
         price:
           type: integer
           format: int64
+          minimum: 0
           description: Стоимость месячной подписки в рублях
           example: 300
         user_id:
@@ -350,6 +376,7 @@ components:
         total:
           type: integer
           format: int64
+          minimum: 0
           description: Общее количество подписок в массиве
           example: 10
     bad_request_error:
@@ -366,6 +393,20 @@ components:
           type: string
           description: Описание ошибки
           example: 'Bad Request: Invalid parameter format'
+    not_found_error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: HTTP-код ошибки
+          example: 404
+        message:
+          type: string
+          description: Описание ошибки
+          example: Weather for city 'Unknown' not found
     validation_error:
       type: object
       required:
@@ -404,11 +445,14 @@ components:
       properties:
         service_name:
           type: string
+          minLength: 1
+          maxLength: 255
           description: Название сервиса, предоставляющего подписку
           example: Yandex Plus
         price:
           type: integer
           format: int64
+          minimum: 0
           description: Стоимость месячной подписки в рублях
           example: 300
         user_id:
@@ -461,6 +505,8 @@ components:
           example: 550e8400-e29b-41d4-a716-446655440000
         service_name:
           type: string
+          minLength: 1
+          maxLength: 255
           description: Название сервиса, предоставляющего подписку
           example: Yandex Plus
     get_totalcost_response:
@@ -469,6 +515,7 @@ components:
         - total_cost
         - period
         - filters
+        - total_subscriptions
       properties:
         total_cost:
           type: integer
@@ -482,21 +529,7 @@ components:
     get_subscription_response:
       type: object
       allOf:
-        - $ref: '#/components/schemas/subscriptions_req_dto'
-    not_found_error:
-      type: object
-      required:
-        - code
-        - message
-      properties:
-        code:
-          type: integer
-          description: HTTP-код ошибки
-          example: 404
-        message:
-          type: string
-          description: Описание ошибки
-          example: Weather for city 'Unknown' not found
+        - $ref: '#/components/schemas/subscriptions_resp_dto'
     update_subscription_request:
       type: object
       allOf:

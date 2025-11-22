@@ -48,18 +48,11 @@ get:
   tags: 
     - Subscriptions
   operationId: GetSubscription
-  parameters:
-    - name: user_id
-      in: query
-      required: false
-      schema: 
-        type: string
-        format: uuid
-    - name: service_name
-      in: query
-      required: false
-      schema:
-        type: string
+  requestBody:
+    content: 
+      application/json:
+        schema:
+          $ref: ../components/get_subscriptions_request.yaml
   responses:
     "200":
       description: Выдача необходимых подписок 
@@ -67,6 +60,12 @@ get:
         application/json:
           schema:
             $ref: ../components/get_subscriptions_response.yaml
+    "404":
+      description: Данная подписка не найдена
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/not_found_error.yaml
     "400":
       description: Плохой запрос - переданы неверные параметры
       content:

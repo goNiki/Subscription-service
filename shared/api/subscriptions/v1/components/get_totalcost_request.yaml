@@ -10,6 +10,8 @@ properties:
     example: "123e4567-e89b-12d3-a456-426614174000"
   service_name:
     type: string
+    minLength: 1
+    maxLength: 255
     description: Название сервиса, предоставляющего подписку
     example: "Yandex Plus"
   start_date: 

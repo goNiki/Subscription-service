@@ -13,7 +13,7 @@ type Handler interface {
 	// Получение списка списка отфильтрованных подписок.
 	//
 	// GET /api/v1/subscriptions
-	GetSubscription(ctx context.Context, params GetSubscriptionParams) (GetSubscriptionRes, error)
+	GetSubscription(ctx context.Context, req OptGetSubscriptionsRequest) (GetSubscriptionRes, error)
 	// GetTotalCostSubscriptions implements GetTotalCostSubscriptions operation.
 	//
 	// Производит подсчет стоимости всех подписок,

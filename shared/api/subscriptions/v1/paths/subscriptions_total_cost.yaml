@@ -11,23 +11,29 @@ get:
       schema:
         type: string
         format: uuid
+        description: ID пользователя
     - name: service_name
       in: query
       required: false
       schema: 
         type: string
+        minLength: 1
+        maxLength: 255
+        description: Название сервиса
     - name: start_date
       in: query
       required: true
       schema: 
         type: string
         pattern: '^\d{2}-\d{4}$'
+        description: Дата начала периода
     - name: end_date
       in: query
       required: true
       schema:
         type: string
         pattern: '^\d{2}-\d{4}$'
+        description: Дата конца периода
   responses:
     "200":
       description: Оплата произведена успешно

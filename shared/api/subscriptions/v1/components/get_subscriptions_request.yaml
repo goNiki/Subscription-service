@@ -1,9 +1,8 @@
 type: object
-required:
 properties:
-  user_id: 
+  user_id:
     type: string
-    pattern: uuid
+    format: uuid
     description: ID пользователя
     example: "550e8400-e29b-41d4-a716-446655440000"
   service_name:
