@@ -1,8 +1,11 @@
 package v1
 
 import (
+	"context"
 	"log/slog"
 
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/goNiki/Subscription-service/internal/infrastructure/logger/sl"
 	"github.com/goNiki/Subscription-service/internal/service"
 )
 
@@ -16,4 +19,11 @@ func NewSubscriptionsApi(log *slog.Logger, SubscriptionsService service.Subscrip
 		log:                  log,
 		subscriptionsService: SubscriptionsService,
 	}
+}
+
+func (a *Api) logError(ctx context.Context, operation string, err error) {
+	a.log.Error("operation Error",
+		slog.String("operation", operation),
+		slog.String("request_id", middleware.GetReqID(ctx)),
+		sl.Error(err))
 }
