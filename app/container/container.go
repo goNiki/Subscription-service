@@ -8,15 +8,19 @@ import (
 	"github.com/goNiki/Subscription-service/internal/infrastructure/config"
 	"github.com/goNiki/Subscription-service/internal/infrastructure/db"
 	"github.com/goNiki/Subscription-service/internal/infrastructure/logger"
+	"github.com/goNiki/Subscription-service/internal/infrastructure/migrator"
 	subscriptionsrepo "github.com/goNiki/Subscription-service/internal/repository/subscriptions"
 	subscrtiptionsservice "github.com/goNiki/Subscription-service/internal/service/subscrtiptions"
 	"github.com/goNiki/Subscription-service/shared/pkg/openapi/subscriptions/v1"
 )
 
+const MigDir = "./migrators"
+
 type Container struct {
 	Config               *config.Config
 	Log                  logger.Logger
 	DB                   *db.DB
+	Migration            *migrator.Migrator
 	SubscriptionsRepo    *subscriptionsrepo.Repository
 	SubscriptionsService *subscrtiptionsservice.Service
 	SubscriptionsApi     *v1.Api
@@ -40,6 +44,9 @@ func NewContainer(configpath string) (*Container, error) {
 	if err != nil {
 		return &Container{}, err
 	}
+
+	c.Migration = migrator.NewMigrator(c.DB.Pool, MigDir)
+	c.Migration.Up()
 
 	c.SubscriptionsRepo = subscriptionsrepo.NewSubscriptionsRepo(c.DB.Pool)
 
