@@ -29,14 +29,14 @@ func NewContainer(configpath string) (*Container, error) {
 	c := &Container{}
 	var err error
 
-	c.Config, err = config.InitConfig(configpath)
+	c.Config, err = config.InitConfig()
 	if err != nil {
 		return &Container{}, err
 	}
 
-	c.Log = *logger.InitLogger(c.Config.Server.Env)
+	c.Log = *logger.InitLogger(c.Config.ServerConfig.Env)
 
-	c.DB, err = db.NewDB(&c.Config.DB)
+	c.DB, err = db.NewDB(&c.Config.DBConfig)
 	if err != nil {
 		return &Container{}, err
 	}
@@ -53,8 +53,8 @@ func NewContainer(configpath string) (*Container, error) {
 	}
 
 	c.Server = &http.Server{
-		Addr:        net.JoinHostPort(c.Config.Server.Host, c.Config.Server.Port),
-		ReadTimeout: c.Config.Server.Timeout,
+		Addr:        net.JoinHostPort(c.Config.ServerConfig.Host, c.Config.ServerConfig.Port),
+		ReadTimeout: c.Config.ServerConfig.Timeout,
 	}
 
 	return c, nil

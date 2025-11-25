@@ -20,16 +20,16 @@ var configpath = "./configs/config.yaml"
 
 func main() {
 
-	cfg, err := config.InitConfig(configpath)
+	cfg, err := config.InitConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	l := logger.InitLogger(cfg.Server.Env)
+	l := logger.InitLogger(cfg.ServerConfig.Env)
 
 	l.Log.Info("Конфиг иннициализирован")
 
-	postgres, err := db.NewDB(&cfg.DB)
+	postgres, err := db.NewDB(&cfg.DBConfig)
 	if err != nil {
 		log.Fatal(err)
 		return

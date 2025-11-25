@@ -45,7 +45,7 @@ func main() {
 		}
 	}()
 
-	fmt.Printf("Сервер запущен на %s порту \n", c.Config.Server.Port)
+	fmt.Printf("Сервер запущен на %s порту \n", c.Config.ServerConfig.Port)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)

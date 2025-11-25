@@ -16,7 +16,7 @@ type DB struct {
 }
 
 func NewDB(dbconfig *config.DBConfig) (*DB, error) {
-	connString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbconfig.User, dbconfig.Password, dbconfig.Host, dbconfig.Port, dbconfig.Name, dbconfig.Sslmode)
+	connString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbconfig.User, dbconfig.Password, dbconfig.Host, dbconfig.Port, dbconfig.Name, dbconfig.SslMode)
 
 	PoolCfg, err := pgxpool.ParseConfig(connString)
 	if err != nil {
